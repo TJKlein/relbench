@@ -1,3 +1,4 @@
+import duckdb
 import pandas as pd
 from relbench.base import Database, Table, EntityTask, TaskType
 from relbench.metrics import (
@@ -22,16 +23,27 @@ class SALTTask(EntityTask):
             self.dataset.get_db().table_dict[self.entity_table].df[target_col].nunique()
         )
 
-    def make_table(
-        self, db: Database, start_timestamp: pd.Timestamp, end_timestamp: pd.Timestamp
-    ) -> Table:
+    def make_table(self, db: Database, timestamps: "pd.Series[pd.Timestamp]") -> Table:
         df = db.table_dict[self.entity_table].df
-        df = df[
-            (df[self.time_col] >= start_timestamp) & (df[self.time_col] < end_timestamp)
-        ][[self.entity_col, self.time_col, self.target_col]]
+        timestamp_df = pd.DataFrame({"timestamp": timestamps})
+
+        query = f"""
+            SELECT 
+                timestamp,
+                {self.entity_col},
+                {self.target_col}
+            FROM 
+                timestamp_df,
+                df
+            WHERE 
+                df.{self.time_col} > timestamp AND 
+                df.{self.time_col} <= timestamp + INTERVAL '{self.timedelta}'
+        """
+
+        result_df = duckdb.sql(query).df()
 
         return Table(
-            df=df,
+            df=result_df,
             fkey_col_to_pkey_table={self.entity_col: self.entity_table},
             pkey_col=None,
             time_col=self.time_col,
