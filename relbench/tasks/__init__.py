@@ -8,7 +8,7 @@ import pooch
 
 from relbench.base import BaseTask
 from relbench.datasets import get_dataset
-from relbench.tasks import amazon, avito, event, f1, hm, stack, trial
+from relbench.tasks import amazon, avito, event, f1, hm, stack, trial, salt
 
 task_registry = defaultdict(dict)
 
@@ -133,3 +133,25 @@ register_task("rel-trial", "study-adverse", trial.StudyAdverseTask)
 register_task("rel-trial", "site-success", trial.SiteSuccessTask)
 register_task("rel-trial", "condition-sponsor-run", trial.ConditionSponsorRunTask)
 register_task("rel-trial", "site-sponsor-run", trial.SiteSponsorRunTask)
+
+
+register_task("rel-sap", "plant-salt", salt.PLANTSaltTask)
+register_task("rel-sap", "shippingpoint-salt", salt.SHIPPINGPOINTSaltTask)
+register_task(
+    "rel-sap",
+    "itemincotermsclassification-salt",
+    salt.ITEMINCOTERMSCLASSIFICATIONSaltTask,
+)
+register_task("rel-sap", "salesoffice-salt", salt.SALESOFFICESaltTask)
+register_task("rel-sap", "salesgroup-salt", salt.SALESGROUPSaltTask)
+register_task(
+    "rel-sap",
+    "customerpaymentterms-salt",
+    salt.SALESGROUCUSTOMERPAYMENTTERMSSaltTaskPSaltTask,
+)
+register_task("rel-sap", "shippingcondition-salt", salt.SHIPPINGCONDITIONSaltTask)
+register_task(
+    "rel-sap",
+    "headerincotermsclassification-salt",
+    salt.HEADERINCOTERMSCLASSIFICATIONSaltTask,
+)
